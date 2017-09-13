@@ -1,5 +1,6 @@
 from flask import Flask, request, escape, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
+import re
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -19,21 +20,47 @@ class Blog(db.Model):
 
 
 # TODO: Setup app route with def index to display blog posts "/blog"
-
-
-# TODO: Setup app route with def new_post "/newpost"
-@app.route('/', methods=['GET', 'POST'])
-def index():
+@app.route('/blog', methods=['GET'])
+def blog_page():
     
+    titles = Blog.query.all()
+    return render_template('blog_index.html', title="Blog Name", titles=titles)
+
+@app.route('/newpost')
+def index():
+    return render_template('/new_post.html')
+
+def is_not_empty(value):
+    if (re.compile('.')).match(value):
+        return True
+
+@app.route('/newpost', methods=['GET', 'POST'])
+def new_post():
+
+    title_error = ""
+    body_error = ""
+
     if request.method == 'POST':
+        
         post_title = request.form['post_title']
         post_body = request.form['post_body']
-        new_post = Blog(post_title, post_body)
+        
+        if not is_not_empty(post_title):
+            title_error += "This field cannot be empty. "
 
-        db.session.add(new_post)
-        db.session.commit()
+        if not is_not_empty(post_body):
+            body_error += "This field cannot be empty. "
 
-    return render_template('new_post.html', title="New Post")
+        if not title_error and not body_error:
+            new_post = Blog(post_title, post_body)
+            db.session.add(new_post)
+            db.session.commit()
+
+            return redirect('/blog')
+        else:
+            return render_template('new_post.html', title="New Post", title_error=title_error, post_title=post_title, body_error=body_error, post_body=post_body)
+
+
 
 
 if __name__ == '__main__':

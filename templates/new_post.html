@@ -3,10 +3,16 @@
 {% block content %}
     <h1>New Post</h1>
     <form method="POST">
-        <label for="post_title">Post Title</label>
-        <input type="text" name="post_title" id="post_title">
-        <label for="post_body">Post Body</label>
-        <textarea name="post_body" id="post_body"></textarea>
+        <label for="post_title">Post Title
+            <p class="error">{{title_error}}</p>
+            <input type="text" name="post_title" id="post_title" value="{{post_title}}">
+        </label>
+        <br>
+        <label for="post_body">Post Body
+            <p class="error">{{body_error}}</p>
+            <textarea name="post_body" id="post_body" value="{{post_body}}"></textarea>
+        </label>
+        <br>
         <input type="submit" value="Add New Post">
     </form>
 {% endblock %}

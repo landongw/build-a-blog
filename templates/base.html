@@ -7,9 +7,15 @@
     <title>{{title}}</title>
 </head>
 <body>
-    
+    <header>
+        <nav>
+            <a href="/blog">Home</a>
+            <a href="newpost">New Post</a>
+        </nav>
+    </header>
+    <main>
     {% block content %}
     {% endblock %}
-
+    </main>
 </body>
 </html>
