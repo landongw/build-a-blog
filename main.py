@@ -60,8 +60,16 @@ def new_post():
         else:
             return render_template('new_post.html', title="New Post", title_error=title_error, post_title=post_title, body_error=body_error, post_body=post_body)
 
+@app.route('/single-post', methods=['GET'])
+def single_post():
+    
+    post_id = request.args.get('id')
+    post_title = request.args.get('post_title')
+    post_body = request.args.get('post_body')
 
+    # db.session.query(Blog).get(post_id)
 
+    return render_template('single_post.html', post_title=post_title, post_body=post_body, post_id=post_id)
 
 if __name__ == '__main__':
     app.run()
