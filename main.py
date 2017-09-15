@@ -53,16 +53,22 @@ def new_post():
             new_post = Blog(post_title, post_body)
             db.session.add(new_post)
             db.session.commit()
-            return redirect('/blog')
+            obj = db.session.query(Blog).order_by(Blog.id.desc()).first()
+            post_id = str(obj.id)
+            return redirect("/single-post/?id=" + post_id)
         else:
             return render_template('new_post.html', title="New Post", 
                                    title_error=title_error, post_title=post_title, 
                                    body_error=body_error, post_body=post_body)
 
-@app.route('/single-post/<int:id>')
+# @app.route('/single-post/<int:id>')
+@app.route('/single-post/')
 def single_post(id = 0):
+    id = request.args.get('id', id)
     post = Blog.query.get(id)
+
     return render_template('single_post.html', post=post)
+    # return "id is {}".format(id)
 
 if __name__ == '__main__':
     app.run()
