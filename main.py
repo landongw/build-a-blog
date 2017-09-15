@@ -3,6 +3,7 @@
 from flask import Flask, request, escape, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
 import re
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -15,10 +16,14 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     post_title = db.Column(db.String(1000))
     post_body = db.Column(db.String(50000))
+    pub_date = db.Column(db.DateTime)
 
-    def __init__(self, post_title, post_body):
+    def __init__(self, post_title, post_body, pub_date=None):
         self.post_title = post_title
         self.post_body = post_body
+        if pub_date is None:
+            pub_date = datetime.utcnow()
+        self.pub_date = pub_date
 
 
 @app.route('/blog', methods=['GET'])
