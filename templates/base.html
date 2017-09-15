@@ -4,18 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <title>{{title}}</title>
 </head>
 <body>
     <header>
-        <nav>
-            <a href="/blog">Home</a>
-            <a href="/newpost">New Post</a>
-        </nav>
+        <div class="main-header">
+            <a href="#"><img src="{{ url_for('static', filename='images/no-logo.png') }}" class="logo"></a>                
+            <nav class="main-nav">
+                <a href="/blog" class="menu-item">Home</a>
+                <a href="/newpost" class="menu-item">New Post</a>
+            </nav>
+        </div>
     </header>
     <main>
     {% block content %}
     {% endblock %}
     </main>
+    <footer>
+    </footer>
 </body>
 </html>

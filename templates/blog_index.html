@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    
-    <h1>Blog Name</h1>
-    {% for title in titles %}
-        <h2><a href="{{ '/single-post/?id=%s'%title.id }}">{{title.post_title}}</a></h2>
-        <p>{{title.post_body}}</p>
-        <hr>
-    {% endfor %}
-    
+    <section class="row">
+        <div class="col">
+            <h1>Blog Name</h1>
+            {% for title in titles %}
+                <h2><a href="{{ '/single-post/?id=%s'%title.id }}">{{title.post_title}}</a></h2>
+                <p>{{title.post_body}}</p>
+                <hr>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}
