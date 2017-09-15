@@ -1,3 +1,5 @@
+"""This script runs a simple blog website"""
+
 from flask import Flask, request, escape, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
 import re
@@ -19,10 +21,8 @@ class Blog(db.Model):
         self.post_body = post_body
 
 
-# TODO: Setup app route with def index to display blog posts "/blog"
 @app.route('/blog', methods=['GET'])
 def blog_page():
-    
     titles = Blog.query.all()
     return render_template('blog_index.html', title="Blog Name", titles=titles)
 
@@ -41,10 +41,8 @@ def new_post():
     body_error = ""
 
     if request.method == 'POST':
-        
         post_title = request.form['post_title']
         post_body = request.form['post_body']
-        
         if not is_not_empty(post_title):
             title_error += "This field cannot be empty. "
 
@@ -55,21 +53,16 @@ def new_post():
             new_post = Blog(post_title, post_body)
             db.session.add(new_post)
             db.session.commit()
-
             return redirect('/blog')
         else:
-            return render_template('new_post.html', title="New Post", title_error=title_error, post_title=post_title, body_error=body_error, post_body=post_body)
+            return render_template('new_post.html', title="New Post", 
+                                   title_error=title_error, post_title=post_title, 
+                                   body_error=body_error, post_body=post_body)
 
-@app.route('/single-post', methods=['GET'])
-def single_post():
-    
-    post_id = request.args.get('id')
-    post_title = request.args.get('post_title')
-    post_body = request.args.get('post_body')
-
-    # db.session.query(Blog).get(post_id)
-
-    return render_template('single_post.html', post_title=post_title, post_body=post_body, post_id=post_id)
+@app.route('/single-post/<int:id>')
+def single_post(id = 0):
+    post = Blog.query.get(id)
+    return render_template('single_post.html', post=post)
 
 if __name__ == '__main__':
     app.run()
