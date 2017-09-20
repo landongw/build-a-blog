@@ -2,12 +2,14 @@
 
 import re
 from datetime import datetime
-from flask import Flask, request, escape, redirect, render_template
+from flask import Flask, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:GJqHxp3hiinzIPvh@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = ("mysql+pymysql://build-a-blog:"
+                                         "GJqHxp3hiinzIPvh@localhost:8889"
+                                         "/build-a-blog")
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 
@@ -15,7 +17,7 @@ db = SQLAlchemy(app)
 class Blog(db.Model):
     """ Creates the Blog table and constructor """
 
-    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, primary_key=True)
     post_title = db.Column(db.String(1000))
     post_body = db.Column(db.String(50000))
     pub_date = db.Column(db.DateTime)
@@ -71,9 +73,9 @@ def new_post():
             new_post = Blog(post_title, post_body)
             db.session.add(new_post)
             db.session.commit()
-            obj = db.session.query(Blog).order_by(Blog.id.desc()).first()
-            post_id = str(obj.id)
-            return redirect("/single-post/?id=" + post_id)
+            obj = db.session.query(Blog).order_by(Blog.post_id.desc()).first()
+            post_id = str(obj.post_id)
+            return redirect("/single-post/?post_id=" + post_id)
         return render_template('new_post.html', title="New Post",
                                title_error=title_error,
                                post_title=post_title,
@@ -83,11 +85,11 @@ def new_post():
 
 # @app.route('/single-post/<int:id>')
 @app.route('/single-post/')
-def single_post(id=0):
+def single_post(post_id=0):
     """ Returns a template with a single post page """
 
-    id = request.args.get('id', id)
-    post = Blog.query.get(id)
+    post_id = request.args.get('post_id', post_id)
+    post = Blog.query.get(post_id)
 
     return render_template('single_post.html', post=post)
     # return "id is {}".format(id)
