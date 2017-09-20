@@ -1,9 +1,9 @@
-"""This script runs a simple blog website"""
+"""This program runs a simple blog website"""
 
-from flask import Flask, request, escape, redirect, render_template
-from flask_sqlalchemy import SQLAlchemy
 import re
 from datetime import datetime
+from flask import Flask, request, escape, redirect, render_template
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -11,7 +11,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:GJqHxp3hii
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 
+
 class Blog(db.Model):
+    """ Creates the Blog table and constructor """
 
     id = db.Column(db.Integer, primary_key=True)
     post_title = db.Column(db.String(1000))
@@ -28,19 +30,30 @@ class Blog(db.Model):
 
 @app.route('/blog', methods=['GET'])
 def blog_page():
+    """ Returns the main blog page """
+
     titles = Blog.query.all()
     return render_template('blog_index.html', title="Blog Name", titles=titles)
 
+
 @app.route('/newpost')
 def index():
+    """ Returns a template to submit a new post """
+
     return render_template('/new_post.html')
 
+
 def is_not_empty(value):
+    """ Tests if a field is not empty """
+
     if (re.compile('.')).match(value):
         return True
 
+
 @app.route('/newpost', methods=['GET', 'POST'])
 def new_post():
+    """ Submits the new post to the database and
+    redirects the user to the new post """
 
     title_error = ""
     body_error = ""
@@ -61,14 +74,18 @@ def new_post():
             obj = db.session.query(Blog).order_by(Blog.id.desc()).first()
             post_id = str(obj.id)
             return redirect("/single-post/?id=" + post_id)
-        else:
-            return render_template('new_post.html', title="New Post", 
-                                   title_error=title_error, post_title=post_title, 
-                                   body_error=body_error, post_body=post_body)
+        return render_template('new_post.html', title="New Post",
+                               title_error=title_error,
+                               post_title=post_title,
+                               body_error=body_error,
+                               post_body=post_body)
+
 
 # @app.route('/single-post/<int:id>')
 @app.route('/single-post/')
-def single_post(id = 0):
+def single_post(id=0):
+    """ Returns a template with a single post page """
+
     id = request.args.get('id', id)
     post = Blog.query.get(id)
 
